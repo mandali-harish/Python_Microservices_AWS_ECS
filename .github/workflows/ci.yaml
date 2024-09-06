@@ -30,8 +30,8 @@ jobs:
       with:
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/app1:${{github.run_id}}
-        context: ./app1
-        file: ./Dockerfile 
+        context: .
+        file: ./app1/Dockerfile 
 
     - name: Build and Push App2 Docker image
       uses: docker/build-push-action@v6
