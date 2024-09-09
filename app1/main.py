@@ -4,7 +4,8 @@ import httpx
 
 app = FastAPI()
 
-APP2_URL = os.getenv("APP2_URL","http://app2:80/api2/send/")
+APP2_URL = os.getenv("APP2_URL","http://app2:8001/api2/send/")
+
 
 @app.get("/get/send/{message}")
 async def forward_message(message: str):

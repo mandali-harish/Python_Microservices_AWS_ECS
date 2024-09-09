@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  app1:
+    build: ./app1
+    container_name: app1
+    hostname: app1
+    ports:
+      - "8000:8000"
+    environment:
+      - APP2_URL=http://app2:8001/api2/send/
+    networks:
+      - pythonapi_network
+  
+  app2:
+    build: ./app2
+    container_name: app2
+    hostname: app2
+    ports:
+      - "8001:8001"
+    networks:
+      - pythonapi_network
+
+networks:
+  pythonapi_network:
+    driver: bridge
