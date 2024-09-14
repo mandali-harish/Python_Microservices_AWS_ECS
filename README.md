@@ -21,7 +21,7 @@ This repository contains two microservices built using Python FastAPI and deploy
 - **AWS**: Deployed in AWS cloud
 - **Terraform**: Infrastructure-as-Code for deployment automation.
 
-### Infrastructure Overview
+## Infrastructure Overview
 <img src="images/architecture.drawio.png">
 
 The infrastructure is set up using AWS and Terraform. The following services are leveraged:
@@ -31,13 +31,13 @@ The infrastructure is set up using AWS and Terraform. The following services are
 - **CloudWatch**: The ECS tasks for both App1 and App2 are configured to log their activities to AWS CloudWatch.
 - **Application Load Balancer**:  The Application Load Balancer routes external HTTP requests to the ECS tasks running the App1 microservice.
 
-### Deployment Process
-#### Prequisites
+## Deployment Process
+### Prequisites
 - Docker
 - AWS CLI: Logged into an AWS Account
 - Terraform
 
-#### Walkthrough
+### Walkthrough
 
 #### 1. Creation of Python microservices
 1. Created [App1](app1) and [App2](app2) using fastAPI, httpx and uvicorn modules. 
@@ -59,9 +59,71 @@ Requests can be sent to app1 as http://localhost:8000/get/send/hello and the res
 #### 2. Setting up CI/CD using Gitlab
 Created [.gitlab-ci.yml](.gitlab-ci.yml) file and defined the jobs to build docker images for both microservices on commits and merge requests. These docker images will be stored in the gitlab container registry. Which will be later used in the ECS task definitions for creation of containers.
 
-#### 3. Creating AWS Infrastructure in AWS
-**Prerequisites**
-1. Installed Terraform.
-2. Used aws cli to login to the AWS Account.
-3. Created an S3 bucket and dynamodb table to store the terraform state file remotely.
-4. Defined the [provider.tf](terraform/provider.tf) for AWS and configured to store the terraform state file remotely in S3.
+#### 3. Creating AWS Infrastructure using Terraform
+**Backend Setup**
+1. Created an S3 bucket to store the terraform state file remotely.
+```
+aws s3 mb harishmandali-tfstate-bucket
+aws s3api put-bucket-versioning --bucket harishmandali-tfstate-bucket --versioning-configuration Status=Enabled
+aws s3api put-bucket-encryption --bucket harishmandali-tfstate-bucket --server-side-encryption-configuration '{"Rules": [{"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}}]}'
+```
+2. Define Bucket policy:
+```
+aws s3api put-bucket-policy --bucket harishmandali-tfstate-bucket --policy file://terraform/s3bucketpolicy.json
+
+s3bucketpolicy.json:
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::381491907988:user/mandali.harish@gmail.com"
+            },
+            "Action": [
+                "s3:DeleteObject",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:PutObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::harishmandali-tfstate-bucket",
+                "arn:aws:s3:::harishmandali-tfstate-bucket/terraform/terraform.tfstate"
+            ]
+        },
+        {
+            "Sid": "",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "s3:DeleteBucket",
+            "Resource": "arn:aws:s3:::harishmandali-tfstate-bucket"
+        }
+    ]
+}
+```
+3. Created a DynamoDB table to handle state locking. 
+```
+aws dynamodb create-table \
+    --table-name harishmandali-tfstate-locking \
+    --attribute-definitions AttributeName=LockID,AttributeType=S \
+    --key-schema AttributeName=LockID,KeyType=HASH \
+    --deletion-protection-enabled\
+    --on-demand-throughput MaxReadRequestUnits=-1,MaxWriteRequestUnits=-1
+```
+4. Defined the [terraform/provider.tf](terraform/provider.tf) for AWS and configured to store the terraform state file remotely in S3.
+5. Ran below commands to setup the terraform backend:
+```
+terraform init
+terraform apply
+```
+
+**Secrets setup to store the gitlab access token**
+1. Created an access token in gitlab. Ref: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
+2. Created a secret in AWS Secrets Manager to store the gitlab access token as shown below. 
+<img src="images/secrets-gitlab.png">
+3. Provided a secret name. Reviewed the details and stored it.
+4. Made a note of the Secret ARN, which wiil be used in task definitions to authenticate to gitlab repository: [terraform/ecs.tf](terraform/ecs.tf) 
+
+**Creation of AWS Infrastructure for the microservices**
+Created all the required terraform files under [terraform](terraform) folder to create the infrastructure. 
