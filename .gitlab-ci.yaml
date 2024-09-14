@@ -1,9 +1,0 @@
-stages:          # List of stages for jobs, and their order of execution
-  - build
-
-variables:
-  AWS_REGION: $AWS_REGION
-  APP1_ECR: $APP1_ECR
-  APP2_ECR: $APP2_ECR
-
-before_script:
