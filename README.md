@@ -1,6 +1,8 @@
 # PythonMicroservicesAWS
 A Python-based microservices project deployed on AWS using ECS and Terraform.
 
+Description of Challenge can be found here : [LiveEO Challenge](README_challenge.md)
+
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Features](#features)
@@ -22,7 +24,7 @@ This repository contains two microservices built using Python FastAPI and deploy
 - **Terraform**: Infrastructure-as-Code for deployment automation.
 
 ## Infrastructure Overview
-<img src="images/architecture.drawio.png">
+<img src="images/architecture.png">
 
 The infrastructure is set up using AWS and Terraform. The following services are leveraged:
 - **VPC** : AWS Virtual Private Cloud (VPC) enables users to launch AWS resources in a logically isolated virtual network. The VPC has a private and a public subnet in two of the Availability Zones in the Region. An internet gateway to allow communication between the resources in the VPC and the internet. A single NAT gateway to allow instances in private subnet to communicate with internet. 
@@ -114,16 +116,50 @@ aws dynamodb create-table \
 4. Defined the [terraform/provider.tf](terraform/provider.tf) for AWS and configured to store the terraform state file remotely in S3.
 5. Ran below commands to setup the terraform backend:
 ```
+cd terraform
 terraform init
 terraform apply
 ```
 
 **Secrets setup to store the gitlab access token**
-1. Created an access token in gitlab. Ref: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
-2. Created a secret in AWS Secrets Manager to store the gitlab access token as shown below. 
-<img src="images/secrets-gitlab.png">
+1. Created an access token in gitlab. Referred [here](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html).
+2. Created a secret in AWS Secrets Manager to store the gitlab access token as shown below.
+
+<img src="images/secrets-gitlab.png" width=600 height=800>
+
 3. Provided a secret name. Reviewed the details and stored it.
-4. Made a note of the Secret ARN, which wiil be used in task definitions to authenticate to gitlab repository: [terraform/ecs.tf](terraform/ecs.tf) 
+4. Made a note of the Secret ARN, which will be used in task definitions [terraform/ecs.tf](terraform/ecs.tf) to authenticate to gitlab repository.
+
 
 **Creation of AWS Infrastructure for the microservices**
-Created all the required terraform files under [terraform](terraform) folder to create the infrastructure. 
+1. Created all the required terraform files under [terraform](terraform) folder to create the infrastructure. 
+2. Detailed description of the terraform files can be found [here](terraform/README.md).
+3. Created the infrastructure using terraform commands:
+```
+terraform init
+
+terraform plan
+
+terraform apply
+```
+4. The Application Load Balancer DNS name configured for App1 can be found in the terraform outputs: `terraform output`. 
+5. Messages can be sent to App1 using the URL: *{Application Load Balancer DNS name}/get/send/hello* and response can be observed as follows:
+```
+{"original":"hello","processed":"olleh"}
+```
+<img src="images/FinalOutput.png">
+
+6. Perfomed Load testing of App1 to generate alerts and also test autoscaling based on CPU utilization. Both were working fine. Below are the screenshots:
+
+**Alert:**
+
+<img src="images/Alerts.png" width=900 height=450>
+
+**Autoscaling:**
+
+<img src="images/Autoscaling.png" width=900 height=450>
+
+7. Resources have been destroyed using `terraform destroy` command.
+
+
+Note: Secrets, S3 and dynamoDB table must be deleted once this application is no longer required.

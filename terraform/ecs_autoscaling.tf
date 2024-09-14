@@ -18,7 +18,7 @@ resource "aws_appautoscaling_policy" "ecs_policy_app1" {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
 
-    target_value = 80
+    target_value = 45
   }
 }
 
@@ -42,6 +42,6 @@ resource "aws_appautoscaling_policy" "ecs_policy_app2" {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
 
-    target_value = 80
+    target_value = 45
   }
 }
