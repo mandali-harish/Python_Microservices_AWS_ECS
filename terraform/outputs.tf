@@ -1,3 +1,3 @@
 output "alb_hostname" {
-   value = aws_alb.app1-alb.dns_name
+   value = aws_alb.app1_alb.dns_name
 }

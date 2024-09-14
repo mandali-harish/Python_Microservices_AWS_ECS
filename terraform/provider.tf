@@ -5,9 +5,15 @@ terraform {
       version = "~> 5.0"
     }
   }
+    backend "s3" {
+    bucket         = "harishmandali-tfstate-bucket"
+    key            = "terraform/terraform.tfstate"
+    region         = "eu-central-1"
+    dynamodb_table = "harishmandali-tfstate-locking"
+    encrypt        = true
+  }
 }
 
-# Configure the AWS Provider
 provider "aws" {
   region = var.aws_region
 }

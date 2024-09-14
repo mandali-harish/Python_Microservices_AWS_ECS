@@ -1,46 +1,52 @@
 variable "project_name"{
-    type = string
     default = "python-microservices"
     description = "Project Name"
 }
+
 variable "aws_region" {
-    type = string
     description = "AWS region"
     default = "eu-central-1"
-}
-variable "health_check_path" {
-    default = "/get/send/health"
 }
 
 variable "app1_port" {
     default = 8000
-    description = "App1 exposed port number"
+    description = "App1 port number"
 }
 
 variable "app2_port" {
     default = 8001
-    description = "App2 exposed port number"
+    description = "App2 port number"
+}
+
+variable "http_port" {
+    default = 80
+    description = "HTTP port number"
 }
 
 variable "fargate_cpu"{
-    default = "1024"
+    default = "512"
 }
 
 variable "fargate_memory"{
-    default = "2048"
+    default = "1024"
 }
 
-variable "app_count"{
-    default = "1"
+variable "app1_cpu"{
+    default = 512
 }
 
-variable "private_dns_namespace"{
-    default = "python-microservices-apps"
+variable "app1_memory"{
+    default = 1024
 }
 
-variable "app1_service"{
-    default = "app1-service"
+variable "app2_cpu"{
+    default = 512
 }
-variable "app2_service"{
-    default = "app2-service"
+
+variable "app2_memory"{
+    default = 1024
+}
+
+variable "app_desired_count" {
+    default = 1
 }
