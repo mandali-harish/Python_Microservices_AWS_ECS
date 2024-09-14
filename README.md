@@ -59,7 +59,7 @@ Requests can be sent to app1 as http://localhost:8000/get/send/hello and the res
 ```
 
 #### 2. Setting up CI/CD using Gitlab
-Created [.gitlab-ci.yml](.gitlab-ci.yml) file and defined the jobs to build docker images for both microservices on commits and merge requests. These docker images will be stored in the gitlab container registry. Which will be later used in the ECS task definitions for creation of containers.
+Created [.gitlab-ci.yml](.gitlab-ci.yml) file and defined the jobs to build docker images for both microservices on commits and merge requests. These docker images will be stored in the gitlab container registry.
 
 #### 3. Creating AWS Infrastructure using Terraform
 **Backend Setup**
@@ -69,40 +69,9 @@ aws s3 mb harishmandali-tfstate-bucket
 aws s3api put-bucket-versioning --bucket harishmandali-tfstate-bucket --versioning-configuration Status=Enabled
 aws s3api put-bucket-encryption --bucket harishmandali-tfstate-bucket --server-side-encryption-configuration '{"Rules": [{"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}}]}'
 ```
-2. Define Bucket policy:
+2. Created Bucket policy:
 ```
 aws s3api put-bucket-policy --bucket harishmandali-tfstate-bucket --policy file://terraform/s3bucketpolicy.json
-
-s3bucketpolicy.json:
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "arn:aws:iam::381491907988:user/mandali.harish@gmail.com"
-            },
-            "Action": [
-                "s3:DeleteObject",
-                "s3:GetObject",
-                "s3:ListBucket",
-                "s3:PutObject"
-            ],
-            "Resource": [
-                "arn:aws:s3:::harishmandali-tfstate-bucket",
-                "arn:aws:s3:::harishmandali-tfstate-bucket/terraform/terraform.tfstate"
-            ]
-        },
-        {
-            "Sid": "",
-            "Effect": "Deny",
-            "Principal": "*",
-            "Action": "s3:DeleteBucket",
-            "Resource": "arn:aws:s3:::harishmandali-tfstate-bucket"
-        }
-    ]
-}
 ```
 3. Created a DynamoDB table to handle state locking. 
 ```
@@ -125,7 +94,7 @@ terraform apply
 1. Created an access token in gitlab. Referred [here](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html).
 2. Created a secret in AWS Secrets Manager to store the gitlab access token as shown below.
 
-<img src="images/secrets-gitlab.png" width=600 height=800>
+<img src="images/secrets-gitlab.png" width=800 height=800>
 
 3. Provided a secret name. Reviewed the details and stored it.
 4. Made a note of the Secret ARN, which will be used in task definitions [terraform/ecs.tf](terraform/ecs.tf) to authenticate to gitlab repository.
