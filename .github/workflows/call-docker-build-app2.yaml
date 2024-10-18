@@ -31,5 +31,5 @@ jobs:
           uses: docker/build-push-action@v6
           with:
             push: true
-            tags: ${{ secrets.DOCKERHUB_USERNAME }}/app1:${{github.run_id}}
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/app2:${{github.run_id}}
             context: ./app2
