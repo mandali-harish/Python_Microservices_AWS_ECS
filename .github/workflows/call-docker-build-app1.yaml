@@ -39,3 +39,6 @@ jobs:
             ignore-unfixed: true
             vuln-type: 'os,library'
             severity: 'CRITICAL,HIGH'
+        env:
+            TRIVY_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+            TRIVY_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
