@@ -14,13 +14,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      # Install Trivy
-      - name: Install Trivy
-        uses: aquasecurity/trivy-action@0.20.0
+      - name: Run Trivy vulnerability scanner in fs mode
+        uses: aquasecurity/trivy-action@master
         with:
-          trivy-version: latest
-          
-      # Run Trivy scan on Terraform files
-      - name: Scan Terraform files for vulnerabilities
-        run: |
-          trivy fs --security-checks config --severity HIGH,CRITICAL ./terraform
+          scan-type: 'fs'
+          scan-ref: '.'
+          trivy-config: trivy.yaml
