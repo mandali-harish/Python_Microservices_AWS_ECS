@@ -16,7 +16,7 @@ jobs:
         
       # Install Trivy
       - name: Install Trivy
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.20.0
         with:
           trivy-version: latest
           
