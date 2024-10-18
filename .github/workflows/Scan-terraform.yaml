@@ -5,7 +5,7 @@ on:
       - main
     paths:
         - 'terraform/**'
-        - '.github/workflows/scan-terraform.yaml'
+        - '.github/workflows/Scan-terraform.yaml'
 jobs:
   scan-terraform:
     name: scan terraform
