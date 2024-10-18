@@ -32,6 +32,6 @@ jobs:
           with:
             push: true
             tags: ${{ secrets.DOCKERHUB_USERNAME }}/app1:${{github.run_id}}
-            context: app1
+            context: ./app1
             file: Dockerfile
 
