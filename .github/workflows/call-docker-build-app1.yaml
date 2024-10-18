@@ -39,3 +39,6 @@ jobs:
             ignore-unfixed: true
             vuln-type: 'os,library'
             severity: 'CRITICAL,HIGH'
+
+        - name: Push image to docker hub
+          run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/app1:${{github.run_id}}
