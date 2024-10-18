@@ -1,4 +1,4 @@
-name: build
+name: scan terraform
 on:
   push:
     branches:
@@ -6,8 +6,8 @@ on:
     paths:
         - 'terraform/**'
 jobs:
-  build:
-    name: Build
+  scan-terraform:
+    name: scan terraform
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
