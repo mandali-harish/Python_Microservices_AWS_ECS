@@ -28,12 +28,12 @@ jobs:
             password: ${{ secrets.DOCKERHUB_PASSWORD }}
         
         - name: Build an image from Dockerfile
-          run: docker build -t app1:${{github.run_id}} ./app1
+          run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/app1:${{github.run_id}} ./app1
 
         - name: Run Trivy vulnerability scanner
           uses: aquasecurity/trivy-action@0.20.0
           with: 
-            image-ref: 'app1:${{github.run_id}}'
+            image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/app1:${{github.run_id}}'
             format: 'table'
             exit-code: '1'
             ignore-unfixed: true
