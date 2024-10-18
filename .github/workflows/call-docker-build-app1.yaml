@@ -1,0 +1,37 @@
+name: Build App1
+
+on: 
+# we want pull requests so we can build(test) but not push to image registry
+    push:
+        branches:
+            - 'main'
+        # only build when important files change
+        paths:
+            - 'app1/**'
+            - '.github/workflows/call-docker-build-app1.yaml'
+
+jobs:
+    call-docker-build:
+        name: App1 Docker Build
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+        
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v1  
+        
+        - name: Log in to Docker Hub
+          uses: docker/login-action@v3
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        
+        - name: Build and Push App1 Docker image
+          uses: docker/build-push-action@v6
+          with:
+            push: true
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/app1:${{github.run_id}}
+            context: app1
+            file: Dockerfile
+
