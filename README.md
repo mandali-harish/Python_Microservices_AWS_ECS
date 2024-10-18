@@ -1,8 +1,6 @@
 # PythonMicroservicesAWS
 A Python-based microservices project deployed on AWS using ECS and Terraform.
 
-Description of Challenge can be found here : [LiveEO Challenge](README_challenge.md)
-
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Features](#features)
