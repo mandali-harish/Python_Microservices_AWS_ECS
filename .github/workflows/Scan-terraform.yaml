@@ -1,4 +1,4 @@
-name: build
+name: Scan terraform config
 on:
   push:
     branches:
@@ -7,7 +7,7 @@ on:
         - 'terraform/**'
         - '.github/workflows/scan-terraform.yaml'
 jobs:
-  build:
+  Scan:
     name: Build
     runs-on: ubuntu-20.04
     steps:
