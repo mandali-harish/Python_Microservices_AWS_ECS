@@ -40,10 +40,6 @@ jobs:
             vuln-type: 'os,library'
             severity: 'CRITICAL,HIGH'
             cache: 'true'
-          env:
-            TRIVY_SKIP_DB_UPDATE: true
-            TRIVY_SKIP_JAVA_DB_UPDATE: true
       
-
         - name: Push image to docker hub
           run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/app1:${{github.run_id}}
