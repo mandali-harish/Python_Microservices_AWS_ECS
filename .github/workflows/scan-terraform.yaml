@@ -19,7 +19,6 @@ jobs:
         with:
           scan-type: 'config'
           scan-ref: .
-          hide-progress: true
           format: 'sarif'
           output: 'trivy-results.sarif'
           exit-code: '1'
