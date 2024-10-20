@@ -24,7 +24,7 @@ jobs:
             projectBaseDir: ./app1
             args: >
               -Dsonar.organization=my-org
-              -Dsonar.projectKey=python-microservices-aws-ecs
+              -Dsonar.projectKey=python-microservices-aws-ecs-app1
           env:
               SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
               SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
