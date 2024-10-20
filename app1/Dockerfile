@@ -13,7 +13,6 @@ RUN python -m venv /app/venv
 # Ensure the venv is activated for all subsequent commands
 ENV PATH="/app/venv/bin:$PATH"
 
-
 # Install our requirements.txt
 COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
@@ -24,14 +23,15 @@ FROM python:3.13-alpine
 # Create a non-root user and group
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
+# Set the application directory and the non-root user 
 WORKDIR /app
-
 USER appuser
 
+# Copy files from base image
 COPY --from=base /app /app
-
 COPY . .
 
+#Set path
 ENV PATH="/app/venv/bin:$PATH"
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
